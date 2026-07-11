@@ -234,6 +234,68 @@ export function distinct<T, TKey = T>(
     });
 }
 
+export function union<T, TKey = T>(
+  second: Iterable<T>,
+  keySelector: (item: T) => TKey = (item): TKey => item as unknown as TKey,
+): OperatorFunction<T, T> {
+  return (source) =>
+    lazy(function* () {
+      const seen = new Set<TKey>();
+      for (const item of source) {
+        const key = keySelector(item);
+        if (!seen.has(key)) {
+          seen.add(key);
+          yield item;
+        }
+      }
+      for (const item of second) {
+        const key = keySelector(item);
+        if (!seen.has(key)) {
+          seen.add(key);
+          yield item;
+        }
+      }
+    });
+}
+
+export function intersect<T, TKey = T>(
+  second: Iterable<T>,
+  keySelector: (item: T) => TKey = (item): TKey => item as unknown as TKey,
+): OperatorFunction<T, T> {
+  return (source) =>
+    lazy(function* () {
+      const candidates = new Set<TKey>();
+      for (const item of second) {
+        candidates.add(keySelector(item));
+      }
+      for (const item of source) {
+        if (candidates.delete(keySelector(item))) {
+          yield item;
+        }
+      }
+    });
+}
+
+export function except<T, TKey = T>(
+  second: Iterable<T>,
+  keySelector: (item: T) => TKey = (item): TKey => item as unknown as TKey,
+): OperatorFunction<T, T> {
+  return (source) =>
+    lazy(function* () {
+      const excluded = new Set<TKey>();
+      for (const item of second) {
+        excluded.add(keySelector(item));
+      }
+      for (const item of source) {
+        const key = keySelector(item);
+        if (!excluded.has(key)) {
+          excluded.add(key);
+          yield item;
+        }
+      }
+    });
+}
+
 export function concat<T>(col: Iterable<T>): OperatorFunction<T, T> {
   return (source) =>
     lazy(function* () {

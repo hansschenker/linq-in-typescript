@@ -32,9 +32,11 @@ doubledEvens(from([1, 2, 3, 4])); // [4, 8]
 
 Creation functions: `from` (alias `asEnumerable`), `of`, `range`, `repeat`.
 
-Pipeable sequence operators (lazy, return a new `Enumerable`): `where` (alias `filter`), `select` (alias `map`), `selectMany`, `groupBy`, `join`, `groupJoin`, `orderBy`, `orderByDescending`, `thenBy`, `thenByDescending`, `distinct`, `concat`, `zip`, `take`, `takeWhile`, `skip`, `skipWhile`.
+Pipeable sequence operators (lazy, return a new `Enumerable`): `where` (alias `filter`), `select` (alias `map`), `selectMany`, `groupBy`, `join`, `groupJoin`, `orderBy`, `orderByDescending`, `thenBy`, `thenByDescending`, `distinct`, `union`, `intersect`, `except`, `concat`, `zip`, `take`, `takeWhile`, `skip`, `skipWhile`.
 
 `distinct(keySelector?)` removes duplicates (SameValueZero equality), keeping the first occurrence per key. `zip(second, resultSelector?)` pairs two sequences — tuples by default — and stops at the end of the shorter one. Both stream lazily, so they work with infinite sequences.
+
+`union`, `intersect`, and `except` (each with an optional key selector) are the set operators: results are distinct, follow the first sequence's order, and stream lazily — `union` fully, while `intersect`/`except` buffer the second sequence into a set on first pull.
 
 `join(inner, outerKey, innerKey, result)` is an equi-join: it streams the piped (outer) sequence lazily, buffering the inner sequence into a lookup on first pull, and yields a result per matching pair — unmatched items on either side are dropped. `groupJoin` yields one result per outer element paired with a pipeable enumerable of its matches (empty when none — left-join shaped).
 
