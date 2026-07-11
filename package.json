@@ -1,0 +1,41 @@
+{
+  "name": "linq-in-typescript",
+  "version": "1.0.0",
+  "description": "An implementation of .NET's LINQ API in TypeScript, using generators and the ES iterator protocol for lazy evaluation",
+  "keywords": [
+    "linq",
+    "typescript",
+    "lazy",
+    "enumerable"
+  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./operators": {
+      "types": "./dist/operators.d.ts",
+      "default": "./dist/operators.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
+  }
+}
