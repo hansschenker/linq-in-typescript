@@ -33,7 +33,7 @@ Three things in the comparison don't reduce to the flipped arrow:
 
 2. **API shape is convention, not consequence.** RxJS `zip` being an N-ary creation function with runtime argument parsing (`argsOrArgArray`, `popResultSelector`) versus linq-in-typescript's binary pipeable operator with compile-time overloads — either library could have chosen the other shape. Nothing about push forces variadic runtime parsing.
 
-3. **Operators have a natural home on one side.** `zip` is pull-natural: pairing-by-index is what demand-driven evaluation does by default. `debounceTime` is push-natural — and *impossible* in synchronous pull, because it needs producer-side timing that a blocked consumer can't observe. The duality doesn't crown a winner; it assigns each operator a side where it's cheap and a side where it's effortful.
+3. **Operators have a natural home on one side.** `zip` is pull-natural: pairing-by-index is what demand-driven evaluation does by default. `debounceTime` is push-natural — and *impossible* in synchronous pull, because it needs producer-side timing that a blocked consumer can't observe (see [why-no-debounce-in-pull.md](./why-no-debounce-in-pull.md) for the full argument). The duality doesn't crown a winner; it assigns each operator a side where it's cheap and a side where it's effortful.
 
 ## One-line answer
 

@@ -17,7 +17,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - `src/enumerable.ts` — the minimal `Enumerable<T>` class: wraps an `Iterable<T>`, implements `[Symbol.iterator]`, and has a typed `.pipe(...)` method (overloaded to 9 operators, RxJS-style). No query logic lives on the class.
 - `src/operators.ts` — all operators as standalone pipeable factories, `where(pred) => (source) => Enumerable`. Two kinds:
-  - **Lazy sequence operators** (`where`, `select`, `selectMany`, `groupBy`, `orderBy/thenBy` + descending variants, `distinct`, `concat`, `zip`, `take/takeWhile`, `skip/skipWhile`) return `OperatorFunction<T, R>` and build re-iterable enumerables via the local `lazy()` helper (an object whose `[Symbol.iterator]` is a fresh generator per iteration — this is what makes sequences re-iterable; never return a raw generator, it's one-shot).
+  - **Lazy sequence operators** (`where`, `select`, `selectMany`, `groupBy`, `join/groupJoin`, `orderBy/thenBy` + descending variants, `distinct`, `concat`, `zip`, `take/takeWhile`, `skip/skipWhile`) return `OperatorFunction<T, R>` and build re-iterable enumerables via the local `lazy()` helper (an object whose `[Symbol.iterator]` is a fresh generator per iteration — this is what makes sequences re-iterable; never return a raw generator, it's one-shot).
   - **Terminal operators** (`toArray`, `count`, `first`, `aggregate`, ...) return `UnaryFunction<Iterable<T>, Result>` — pipeable but produce a plain value.
 - `src/create.ts` — `from`/`asEnumerable`, `of`, `range`, `repeat` creation functions (no `Array.prototype` patching, unlike the original).
 - `src/pipe.ts` — standalone `pipe()` for composing reusable operator chains without a source.

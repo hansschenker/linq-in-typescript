@@ -104,6 +104,59 @@ export function groupBy<T, TKey, TElement>(
     });
 }
 
+function buildLookup<TInner, TKey>(
+  inner: Iterable<TInner>,
+  keySelector: (item: TInner) => TKey,
+): Map<TKey, TInner[]> {
+  const lookup = new Map<TKey, TInner[]>();
+  for (const item of inner) {
+    const key = keySelector(item);
+    const bucket = lookup.get(key);
+    if (bucket) {
+      bucket.push(item);
+    } else {
+      lookup.set(key, [item]);
+    }
+  }
+  return lookup;
+}
+
+export function join<TOuter, TInner, TKey, TResult>(
+  inner: Iterable<TInner>,
+  outerKeySelector: (item: TOuter) => TKey,
+  innerKeySelector: (item: TInner) => TKey,
+  resultSelector: (outerItem: TOuter, innerItem: TInner) => TResult,
+): OperatorFunction<TOuter, TResult> {
+  return (source) =>
+    lazy(function* () {
+      const lookup = buildLookup(inner, innerKeySelector);
+      for (const outerItem of source) {
+        const matches = lookup.get(outerKeySelector(outerItem));
+        if (matches) {
+          for (const innerItem of matches) {
+            yield resultSelector(outerItem, innerItem);
+          }
+        }
+      }
+    });
+}
+
+export function groupJoin<TOuter, TInner, TKey, TResult>(
+  inner: Iterable<TInner>,
+  outerKeySelector: (item: TOuter) => TKey,
+  innerKeySelector: (item: TInner) => TKey,
+  resultSelector: (outerItem: TOuter, innerItems: Enumerable<TInner>) => TResult,
+): OperatorFunction<TOuter, TResult> {
+  return (source) =>
+    lazy(function* () {
+      const lookup = buildLookup(inner, innerKeySelector);
+      for (const outerItem of source) {
+        const matches = lookup.get(outerKeySelector(outerItem)) ?? [];
+        yield resultSelector(outerItem, new Enumerable(matches));
+      }
+    });
+}
+
 export type Comparer<TKey> = (a: TKey, b: TKey) => number;
 
 const defaultComparer = <TKey>(a: TKey, b: TKey): number => (a < b ? -1 : a > b ? 1 : 0);
