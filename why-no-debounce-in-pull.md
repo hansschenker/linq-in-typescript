@@ -32,6 +32,8 @@ But look at how it must work internally: the operator has to *pump the source ea
 
 ## Conclusion
 
-For linq-in-typescript, time-based operators are out of scope *by design*, not by limitation. In a future `AsyncEnumerable` variant — the natural next substrate — `debounceTime` becomes implementable, at the cost of exactly that internal pull→push inversion.
+For linq-in-typescript's sync module, time-based operators are out of scope *by design*, not by limitation. In an `AsyncEnumerable` variant — the natural next substrate — `debounceTime` becomes implementable, at the cost of exactly that internal pull→push inversion.
+
+**That variant now exists:** the [`linq-in-typescript/async` module](./docs/async-enumerable.md) ships `AsyncEnumerable` with [`debounceTime`](./docs/debounceTime.md), implemented by precisely the inversion this essay predicted — an eager pump on the source (push inside) serving a pull interface at the boundary.
 
 *Background: [js-iterator-vs-rxjs-observer.md](./js-iterator-vs-rxjs-observer.md) — the Iterator/Observer duality mapping.*

@@ -96,7 +96,14 @@ Aggregation and materialization:
 | [aggregate](./aggregate.md) | General fold with optional seed and result selector |
 | [toArray](./toArray.md) | Materialize the pipeline into an array |
 
-### 10. Theory
+### 10. Async pull
+
+| Page | One-liner |
+| --- | --- |
+| [AsyncEnumerable](./async-enumerable.md) | The `linq-in-typescript/async` module: pull-based, but the consumer awaits each value |
+| [debounceTime](./debounceTime.md) | The time operator that async pull makes possible — via an internal pull→push inversion |
+
+### 11. Theory
 
 The essays behind the design, best read in order:
 

@@ -52,6 +52,22 @@ Pipeable terminal operators (eager, return a value): `aggregate`, `all`, `any`, 
 
 Operators are importable from the root or, RxJS-v6-style, from the `linq-in-typescript/operators` subpath.
 
+## Async
+
+The `linq-in-typescript/async` subpath ships `AsyncEnumerable` — the same pipeable model over `AsyncIterable` (`for await...of`). Because async pull re-admits time into the model, it supports `debounceTime`, which is impossible in the sync module:
+
+```typescript
+import { from, where, debounceTime, toArray } from 'linq-in-typescript/async';
+
+const searches = await from(keystrokes).pipe(
+  where((s) => s.length > 2),
+  debounceTime(300),
+  toArray(),
+);
+```
+
+Includes `from`, `of`, `where`/`filter`, `select`/`map` (async predicates and selectors allowed), `take`, `debounceTime`, and `toArray`.
+
 ## Development
 
 ```

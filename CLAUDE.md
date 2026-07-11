@@ -22,6 +22,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `src/create.ts` — `from`/`asEnumerable`, `of`, `range`, `repeat` creation functions (no `Array.prototype` patching, unlike the original).
 - `src/pipe.ts` — standalone `pipe()` for composing reusable operator chains without a source.
 - `src/index.ts` re-exports everything; `package.json` also exposes an `./operators` subpath.
+- `src/async/` — the `./async` subpath: `AsyncEnumerable` over `AsyncIterable`, same pipe/operator-factory structure (`async function*` + `for await...of`). Not re-exported from the root (operator names would collide). Home of time-based operators (`debounceTime`), which are impossible in sync pull; `debounceTime` works by pumping the source eagerly (push inside) and serving the consumer from an internal queue.
 
 Operators accept `Iterable<T>` (not just `Enumerable<T>`) so composed chains work on arrays too. Laziness is load-bearing and tested: items flow through the entire pipeline one at a time ("lazy fashion" tests iterate arrays of functions where evaluating a skipped item throws).
 
