@@ -36,3 +36,5 @@ It's really a grid of *how many values* by *who drives*, and JavaScript has all 
 | **push** | `Promise` | `Observable` |
 
 There's also a hybrid filling the diagonal: `AsyncIterable`/`AsyncIterator` (`for await...of`) is pull-based like an `Enumerable` but asynchronous — the consumer requests, yet awaits each value. That's the natural next substrate for a LINQ-style library over async sources, sitting exactly between pull-LINQ and RxJS.
+
+For the duality made concrete in a single operator, see [js-zip-vs-rxjs-zip.md](./js-zip-vs-rxjs-zip.md) — a line-by-line comparison of this library's pull-based `zip` with RxJS's push-based one.
