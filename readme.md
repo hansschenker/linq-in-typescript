@@ -32,7 +32,9 @@ doubledEvens(from([1, 2, 3, 4])); // [4, 8]
 
 Creation functions: `from` (alias `asEnumerable`), `of`, `range`, `repeat`.
 
-Pipeable sequence operators (lazy, return a new `Enumerable`): `where` (alias `filter`), `select` (alias `map`), `selectMany`, `groupBy`, `orderBy`, `orderByDescending`, `thenBy`, `thenByDescending`, `concat`, `take`, `takeWhile`, `skip`, `skipWhile`.
+Pipeable sequence operators (lazy, return a new `Enumerable`): `where` (alias `filter`), `select` (alias `map`), `selectMany`, `groupBy`, `orderBy`, `orderByDescending`, `thenBy`, `thenByDescending`, `distinct`, `concat`, `zip`, `take`, `takeWhile`, `skip`, `skipWhile`.
+
+`distinct(keySelector?)` removes duplicates (SameValueZero equality), keeping the first occurrence per key. `zip(second, resultSelector?)` pairs two sequences — tuples by default — and stops at the end of the shorter one. Both stream lazily, so they work with infinite sequences.
 
 `groupBy(keySelector, elementSelector?)` yields `Grouping<TKey, TElement>` objects — enumerables with a `key` property, so each group can itself be piped.
 

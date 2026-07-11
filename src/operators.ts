@@ -165,11 +165,55 @@ export function thenByDescending<T, TKey>(
     source.createOrderedEnumerable((a, b) => comparer(keySelector(b), keySelector(a)));
 }
 
+export function distinct<T, TKey = T>(
+  keySelector: (item: T) => TKey = (item): TKey => item as unknown as TKey,
+): OperatorFunction<T, T> {
+  return (source) =>
+    lazy(function* () {
+      const seen = new Set<TKey>();
+      for (const item of source) {
+        const key = keySelector(item);
+        if (!seen.has(key)) {
+          seen.add(key);
+          yield item;
+        }
+      }
+    });
+}
+
 export function concat<T>(col: Iterable<T>): OperatorFunction<T, T> {
   return (source) =>
     lazy(function* () {
       yield* source;
       yield* col;
+    });
+}
+
+export function zip<T, TSecond>(second: Iterable<TSecond>): OperatorFunction<T, [T, TSecond]>;
+export function zip<T, TSecond, TResult>(
+  second: Iterable<TSecond>,
+  resultSelector: (first: T, second: TSecond) => TResult,
+): OperatorFunction<T, TResult>;
+export function zip<T, TSecond, TResult>(
+  second: Iterable<TSecond>,
+  resultSelector?: (first: T, second: TSecond) => TResult,
+): OperatorFunction<T, [T, TSecond] | TResult> {
+  return (source) =>
+    lazy(function* () {
+      const secondIterator = second[Symbol.iterator]();
+      try {
+        for (const item of source) {
+          const other = secondIterator.next();
+          if (other.done) {
+            return;
+          }
+          yield resultSelector
+            ? resultSelector(item, other.value)
+            : ([item, other.value] as [T, TSecond]);
+        }
+      } finally {
+        secondIterator.return?.();
+      }
     });
 }
 
