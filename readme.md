@@ -32,9 +32,11 @@ doubledEvens(from([1, 2, 3, 4])); // [4, 8]
 
 Creation functions: `from` (alias `asEnumerable`), `of`, `range`, `repeat`.
 
-Pipeable sequence operators (lazy, return a new `Enumerable`): `where` (alias `filter`), `select` (alias `map`), `selectMany`, `groupBy`, `concat`, `take`, `takeWhile`, `skip`, `skipWhile`.
+Pipeable sequence operators (lazy, return a new `Enumerable`): `where` (alias `filter`), `select` (alias `map`), `selectMany`, `groupBy`, `orderBy`, `orderByDescending`, `thenBy`, `thenByDescending`, `concat`, `take`, `takeWhile`, `skip`, `skipWhile`.
 
 `groupBy(keySelector, elementSelector?)` yields `Grouping<TKey, TElement>` objects — enumerables with a `key` property, so each group can itself be piped.
+
+`orderBy`/`orderByDescending(keySelector, comparer?)` return an `OrderedEnumerable` whose ordering can be refined with `thenBy`/`thenByDescending` (the type system rejects a `thenBy` that doesn't follow an `orderBy`). Sorting is deferred until iteration, stable, non-mutating, and compares keys by value — not by JS's default string coercion.
 
 Pipeable terminal operators (eager, return a value): `aggregate`, `all`, `any`, `average`, `contains`, `count`, `first`, `firstOrDefault`, `last`, `lastOrDefault`, `single`, `singleOrDefault`, `toArray`.
 

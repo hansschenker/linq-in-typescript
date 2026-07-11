@@ -104,6 +104,67 @@ export function groupBy<T, TKey, TElement>(
     });
 }
 
+export type Comparer<TKey> = (a: TKey, b: TKey) => number;
+
+const defaultComparer = <TKey>(a: TKey, b: TKey): number => (a < b ? -1 : a > b ? 1 : 0);
+
+export class OrderedEnumerable<T> extends Enumerable<T> {
+  private readonly unsorted: Iterable<T>;
+  private readonly comparer: Comparer<T>;
+
+  constructor(unsorted: Iterable<T>, comparer: Comparer<T>) {
+    super({
+      [Symbol.iterator]: (): Iterator<T> => {
+        const items = [...unsorted];
+        items.sort(comparer);
+        return items[Symbol.iterator]();
+      },
+    });
+    this.unsorted = unsorted;
+    this.comparer = comparer;
+  }
+
+  createOrderedEnumerable(tiebreaker: Comparer<T>): OrderedEnumerable<T> {
+    const parent = this.comparer;
+    return new OrderedEnumerable(this.unsorted, (a, b) => {
+      const result = parent(a, b);
+      return result !== 0 ? result : tiebreaker(a, b);
+    });
+  }
+}
+
+export function orderBy<T, TKey>(
+  keySelector: (item: T) => TKey,
+  comparer: Comparer<TKey> = defaultComparer,
+): UnaryFunction<Iterable<T>, OrderedEnumerable<T>> {
+  return (source) =>
+    new OrderedEnumerable(source, (a, b) => comparer(keySelector(a), keySelector(b)));
+}
+
+export function orderByDescending<T, TKey>(
+  keySelector: (item: T) => TKey,
+  comparer: Comparer<TKey> = defaultComparer,
+): UnaryFunction<Iterable<T>, OrderedEnumerable<T>> {
+  return (source) =>
+    new OrderedEnumerable(source, (a, b) => comparer(keySelector(b), keySelector(a)));
+}
+
+export function thenBy<T, TKey>(
+  keySelector: (item: T) => TKey,
+  comparer: Comparer<TKey> = defaultComparer,
+): UnaryFunction<OrderedEnumerable<T>, OrderedEnumerable<T>> {
+  return (source) =>
+    source.createOrderedEnumerable((a, b) => comparer(keySelector(a), keySelector(b)));
+}
+
+export function thenByDescending<T, TKey>(
+  keySelector: (item: T) => TKey,
+  comparer: Comparer<TKey> = defaultComparer,
+): UnaryFunction<OrderedEnumerable<T>, OrderedEnumerable<T>> {
+  return (source) =>
+    source.createOrderedEnumerable((a, b) => comparer(keySelector(b), keySelector(a)));
+}
+
 export function concat<T>(col: Iterable<T>): OperatorFunction<T, T> {
   return (source) =>
     lazy(function* () {
