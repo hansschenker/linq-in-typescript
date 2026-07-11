@@ -67,3 +67,5 @@ The parts that matter are identical:
 The pull version is ~20 lines; the push version is ~60 plus helpers — not because RxJS is over-engineered, but because zip is intrinsically a **pull-natural operator**: pairing-by-index is what demand-driven evaluation does by default, and RxJS has to simulate that demand with queues.
 
 The flip side: an operator like `debounceTime` is trivial in push and *impossible* in synchronous pull — a neat confirmation that neither side of the duality is the "better" one.
+
+For whether all of this reduces to the pull/push distinction (mostly yes — with precise exceptions), see [pull-vs-push.md](./pull-vs-push.md).
