@@ -32,3 +32,4 @@ Behavior intentionally differs from the JS original in fixed bugs: `first`/`last
 - ESM-only (`"type": "module"`), NodeNext resolution — relative imports need `.js` extensions.
 - TypeScript strict, no `any` (use `unknown` + casts in overload implementations, `never` in variadic impl signatures).
 - One test file per operator in `test/`, mirroring the original repo's suite.
+- One doc page per operator in `docs/` (indexed in `docs/README.md`): summary line, signature, semantics with the laziness profile (streaming/buffering/deferred/short-circuiting), example, .NET + RxJS correspondences, links to the test file. A new operator isn't done without its page.

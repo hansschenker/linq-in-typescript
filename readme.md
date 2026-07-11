@@ -28,6 +28,10 @@ const doubledEvens = pipe(
 doubledEvens(from([1, 2, 3, 4])); // [4, 8]
 ```
 
+## Documentation
+
+**[The operator course](./docs/README.md)** — one page per operator with signature, semantics, laziness profile, examples, and .NET/RxJS correspondences, organized as a learning path from foundations through joins to the pull-vs-push theory essays.
+
 ## API
 
 Creation functions: `from` (alias `asEnumerable`), `of`, `range`, `repeat`.
