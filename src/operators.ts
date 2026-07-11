@@ -63,6 +63,47 @@ export function selectMany<T, TCollection, TResult>(
     });
 }
 
+export class Grouping<TKey, TElement> extends Enumerable<TElement> {
+  readonly key: TKey;
+
+  constructor(key: TKey, elements: Iterable<TElement>) {
+    super(elements);
+    this.key = key;
+  }
+}
+
+export function groupBy<T, TKey>(
+  keySelector: IndexedSelector<T, TKey>,
+): OperatorFunction<T, Grouping<TKey, T>>;
+export function groupBy<T, TKey, TElement>(
+  keySelector: IndexedSelector<T, TKey>,
+  elementSelector: IndexedSelector<T, TElement>,
+): OperatorFunction<T, Grouping<TKey, TElement>>;
+export function groupBy<T, TKey, TElement>(
+  keySelector: IndexedSelector<T, TKey>,
+  elementSelector?: IndexedSelector<T, TElement>,
+): OperatorFunction<T, Grouping<TKey, T | TElement>> {
+  return (source) =>
+    lazy(function* () {
+      const groups = new Map<TKey, Array<T | TElement>>();
+      let index = 0;
+      for (const item of source) {
+        const key = keySelector(item, index);
+        const element = elementSelector ? elementSelector(item, index) : item;
+        index++;
+        const bucket = groups.get(key);
+        if (bucket) {
+          bucket.push(element);
+        } else {
+          groups.set(key, [element]);
+        }
+      }
+      for (const [key, elements] of groups) {
+        yield new Grouping(key, elements);
+      }
+    });
+}
+
 export function concat<T>(col: Iterable<T>): OperatorFunction<T, T> {
   return (source) =>
     lazy(function* () {
