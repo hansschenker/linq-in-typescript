@@ -66,7 +66,7 @@ const searches = await from(keystrokes).pipe(
 );
 ```
 
-Includes `from`, `of`, `where`/`filter`, `select`/`map` (async predicates and selectors allowed), `take`, `debounceTime`, and `toArray`.
+The async module has **full operator parity** with the sync one (all sequence operators, set operators, ordering, joins, and terminals — terminals return `Promise`s), plus `debounceTime`. Every callback may be async, second sequences accept sync or async iterables, and `zip` pulls both sides concurrently.
 
 ## Development
 

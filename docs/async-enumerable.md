@@ -21,12 +21,20 @@ Everything structural carries over from the sync module: `.pipe()` with the same
 
 ## What's in the module
 
-- **Creation:** `from(iterable | asyncIterable)` — wraps either protocol — and `of(...items)`.
-- **Sequence operators:** `where`/`filter`, `select`/`map`, `take` — like their sync counterparts, but predicates and selectors **may be async** (`where(async (x) => ...)`), awaited per item.
-- **Time operator:** [debounceTime](./debounceTime.md) — the operator this module exists to make possible.
-- **Terminal:** `toArray()` — returns `Promise<T[]>`; async-pull terminals resolve rather than return.
+**Full parity with the sync module**, plus the time operator. Semantics match the sync operator pages; only the substrate differs.
 
-The rest of the sync operator set ports mechanically (swap `function*` for `async function*`, `for...of` for `for await...of`) and can be added as needed.
+- **Creation:** `from(iterable | asyncIterable)`, `of`, `range`, `repeat`. The standalone `pipe` is re-exported too.
+- **Sequence operators:** `where`/`filter`, `select`/`map`, `selectMany`, `groupBy`, `join`, `groupJoin`, `orderBy`, `orderByDescending`, `thenBy`, `thenByDescending`, `distinct`, `union`, `intersect`, `except`, `concat`, `zip`, `take`, `takeWhile`, `skip`, `skipWhile`.
+- **Time operator:** [debounceTime](./debounceTime.md) — the operator this module exists to make possible.
+- **Terminals:** `aggregate`, `all`, `any`, `average`, `contains`, `count`, `first`/`firstOrDefault`, `last`/`lastOrDefault`, `single`/`singleOrDefault`, `toArray` — all returning `Promise`s; async-pull terminals resolve rather than return.
+
+## Async-specific differences
+
+- **Every callback may be async.** Predicates, selectors, key selectors, folders, and testers can return promises; they're awaited per item (`where(async (x) => ...)`).
+- **Second sequences accept either protocol.** `concat`, `zip`, the set operators, and the joins take `Iterable | AsyncIterable`.
+- **`zip` pulls both sides concurrently** (`Promise.all` on the two `next()` calls) — an async-only improvement over sequential pulling.
+- **`orderBy` awaits each key once per item** (decorate–sort–undecorate), since `Array.sort` comparators can't await. Key selectors may be async; comparers must be sync. A side effect: the async `orderBy` calls the key selector once per item, not once per comparison.
+- **Support types are prefixed:** `groupBy` yields `AsyncGrouping<TKey, TElement>`; the ordering family works on `OrderedAsyncEnumerable<T>` (same `thenBy`-only-after-`orderBy` compile-time guarantee as the sync module).
 
 ## Example
 
