@@ -29,6 +29,7 @@
     "dist"
   ],
   "scripts": {
+    "prepare": "npm run build",
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
