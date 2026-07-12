@@ -36,6 +36,14 @@
     "test:watch": "vitest"
   },
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hansschenker/linq-in-typescript.git"
+  },
+  "homepage": "https://github.com/hansschenker/linq-in-typescript#readme",
+  "bugs": {
+    "url": "https://github.com/hansschenker/linq-in-typescript/issues"
+  },
   "engines": {
     "node": ">=18"
   },
